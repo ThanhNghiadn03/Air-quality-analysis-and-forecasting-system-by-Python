@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Charts</title>
+    <style>
+        img {
+            width: 100%;
+            height: auto;
+        }
+        #aqi-widget {
+            margin: 20px 0;
+        }
+        .aqi-info {
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+    <script>
+        function showAlert(message) {
+            if (message) {
+                alert(message);
+            }
+        }
+    </script>
+</head>
+<body onload="showAlert('{{ message }}')">
+    <h1>Air Quality Charts for {{ location }}</h1>
+    <div class="aqi-info">
+        <h2>City: {{ position }}</h2>
+        <h2>Current AQI: {{ aqi }} ({{ aqi_level }})</h2>
+        <p>{{ aqi_message }}</p>
+        <p><strong>Cautionary Statement:</strong> {{ cautionary_statement }}</p>
+        <h2>Dominent Pollutant: {{ dominentpol }}</h2>
+    </div>
+    <h2>IAQI Bar Chart (Including Negative Values)</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/iaqi_bar.png') }}" alt="IAQI Bar Chart">
+    <h2>PM2.5 Forecast</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/pm25_forecast.png') }}" alt="PM2.5 Forecast">
+    <h2>PM2.5 Forecast (Grouped Bar Chart)</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/pm25_grouped.png') }}" alt="PM2.5 Grouped Bar Chart">
+    <h2>PM10 Forecast</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/pm10_forecast.png') }}" alt="PM10 Forecast">
+    <h2>PM10 Forecast (Grouped Bar Chart)</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/pm10_grouped.png') }}" alt="PM10 Grouped Bar Chart">
+    <h2>O3 Forecast</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/o3_forecast.png') }}" alt="O3 Forecast">
+    <h2>O3 Forecast (Grouped Bar Chart)</h2>
+    <img src="{{ url_for('static', filename='images/' + location + '/o3_grouped.png') }}" alt="O3 Grouped Bar Chart">
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Air Quality Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 1000px;
+        width: 100%;
+      }
+      #search-box {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+      }
+
+      #search-input {
+        width: 200px;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="search-box">
+      <input type="text" id="search-input" placeholder="Enter name of country or city...." />
+      <button id="search-button">Search</button>
+    </div>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      var map = L.map("map").setView([28.3949, 84.124], 8);
+
+      const mainLayer = L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        {
+          minZoom: 3,
+          maxZoom: 20,
+          attribution:
+            '&copy; <a href="https://carto.com/">carto.com</a> contributors',
+        }
+      );
+      mainLayer.addTo(map);
+
+      // Add your AQICN overlay here
+      var waqiMapOverlay = L.tileLayer(
+        "https://tiles.aqicn.org/tiles/usepa-aqi/{z}/{x}/{y}.png?token=cdcfc9b6df90b585e02ec9d367c88ea755aca36c",
+        {
+          attribution:
+            'Air Quality Tiles &copy; <a href="https://waqi.info">waqi.info</a>',
+        }
+      ).addTo(map);
+
+      document.getElementById("search-button").addEventListener("click", function() {
+        var input = document.getElementById("search-input").value;
+        window.location.href = `/air_quality?position=${input}`
+      });
+    </script>
+  </body>
+</html>
