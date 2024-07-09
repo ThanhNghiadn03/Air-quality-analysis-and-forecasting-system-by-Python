@@ -17,6 +17,27 @@
             padding: 10px;
             margin: 10px 0;
         }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
     </style>
     <script>
         function showAlert(message) {
@@ -29,7 +50,7 @@
 <body onload="showAlert('{{ message }}')">
     <h1>Air Quality Charts for {{ location }}</h1>
     <div class="aqi-info">
-        <h2>City: {{ position }}</h2>
+        <h2>City: {{ city_name }}</h2>
         <h2>Current AQI: {{ aqi }} ({{ aqi_level }})</h2>
         <p>{{ aqi_message }}</p>
         <p><strong>Cautionary Statement:</strong> {{ cautionary_statement }}</p>
@@ -49,5 +70,19 @@
     <img src="{{ url_for('static', filename='images/' + location + '/o3_forecast.png') }}" alt="O3 Forecast">
     <h2>O3 Forecast (Grouped Bar Chart)</h2>
     <img src="{{ url_for('static', filename='images/' + location + '/o3_grouped.png') }}" alt="O3 Grouped Bar Chart">
+
+    <div class="button-container">
+        <form action="/export_word" method="get">
+            <input type="hidden" name="location" value="{{ location }}">
+            <input type="hidden" name="position" value="{{ position }}">
+            <input type="hidden" name="aqi" value="{{ aqi }}">
+            <input type="hidden" name="dominentpol" value="{{ dominentpol }}">
+            <input type="hidden" name="city_name" value="{{ city_name }}">
+            <input type="hidden" name="aqi_level" value="{{ aqi_level }}">
+            <input type="hidden" name="aqi_message" value="{{ aqi_message }}">
+            <input type="hidden" name="cautionary_statement" value="{{ cautionary_statement }}">
+            <button type="submit" class="button">Export to Word</button>
+        </form>
+    </div>
 </body>
 </html>

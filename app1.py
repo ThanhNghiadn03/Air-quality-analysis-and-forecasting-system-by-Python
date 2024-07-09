@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_file
 import requests
 import matplotlib
 matplotlib.use('Agg')
@@ -6,6 +6,8 @@ from matplotlib import pyplot
 import pandas as pd
 from datetime import datetime
 import os
+from docx import Document
+from docx.shared import Inches
 
 app = Flask(__name__)
 
@@ -155,6 +157,61 @@ def get_detail(data,position):
     aqi_level, aqi_message, cautionary_statement = evaluate_aqi(aqi)
     return render_template('index.html', location=location, position=position, aqi=aqi, dominentpol=dominentpol, city_name=position, aqi_level=aqi_level, aqi_message=aqi_message, cautionary_statement=cautionary_statement)
 
+
+@app.route('/export_word')
+def export_word():
+    location = request.args.get('location')
+    position = request.args.get('position')
+    aqi = request.args.get('aqi')
+    dominentpol = request.args.get('dominentpol')
+    city_name = request.args.get('city_name')
+    aqi_level = request.args.get('aqi_level')
+    aqi_message = request.args.get('aqi_message')
+    cautionary_statement = request.args.get('cautionary_statement')
+    
+    document = Document()
+    document.add_heading('Air Quality Report', 0)
+
+    document.add_heading('City:', level=1)
+    document.add_paragraph(city_name)
+
+    document.add_heading('Current AQI:', level=1)
+    document.add_paragraph(f'{aqi} ({aqi_level})')
+    document.add_paragraph(aqi_message)
+
+    document.add_heading('Cautionary Statement:', level=1)
+    document.add_paragraph(cautionary_statement)
+
+    document.add_heading('Dominent Pollutant:', level=1)
+    document.add_paragraph(dominentpol)
+
+    document.add_heading('Charts:', level=1)
+    
+    document.add_heading('IAQI Bar Chart', level=2)
+    document.add_picture(f'static/images/{location}/iaqi_bar.png', width=Inches(6))
+
+    document.add_heading('PM2.5 Forecast', level=2)
+    document.add_picture(f'static/images/{location}/pm25_forecast.png', width=Inches(6))
+    
+    document.add_heading('PM2.5 Forecast (Grouped Bar Chart)', level=2)
+    document.add_picture(f'static/images/{location}/pm25_grouped.png', width=Inches(6))
+
+    document.add_heading('PM10 Forecast', level=2)
+    document.add_picture(f'static/images/{location}/pm10_forecast.png', width=Inches(6))
+
+    document.add_heading('PM10 Forecast (Grouped Bar Chart)', level=2)
+    document.add_picture(f'static/images/{location}/pm10_grouped.png', width=Inches(6))
+
+    document.add_heading('O3 Forecast', level=2)
+    document.add_picture(f'static/images/{location}/o3_forecast.png', width=Inches(6))
+
+    document.add_heading('O3 Forecast (Grouped Bar Chart)', level=2)
+    document.add_picture(f'static/images/{location}/o3_grouped.png', width=Inches(6))
+
+    word_file = f'report_{location}.docx'
+    document.save(word_file)
+
+    return send_file(word_file, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
